@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 // All available instructions for our VM
 const (
 	PSH = iota
@@ -19,12 +21,14 @@ var program = [...]uint8{
 type VM struct {
 	running bool
 	pc      uint32
+	stack   stack
 }
 
 func NewVM() *VM {
 	return &VM{
-		running: false,
+		running: true,
 		pc:      0,
+		stack:   make(stack, 0),
 	}
 }
 
@@ -38,6 +42,19 @@ func (vm *VM) eval(inst uint8) {
 	switch inst {
 	case HLT:
 		vm.running = false
+		fmt.Println("Halting!")
+	case PSH:
+		vm.stack = vm.stack.Push(vm.fetch())
+	case POP:
+		var s, p = vm.stack.Pop()
+		vm.stack = s
+		fmt.Printf("Popped %v off the stack\n", p)
+	case ADD:
+		var s, p = vm.stack.Pop()
+		var t, q = s.Pop()
+		vm.stack = t.Push(p + q)
+	default:
+		fmt.Println("Unrecognized instruction!")
 	}
 }
 
