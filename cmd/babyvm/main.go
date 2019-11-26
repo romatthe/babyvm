@@ -11,6 +11,17 @@ const (
 	HLT
 )
 
+// All available registers for our VM
+const (
+	A = iota
+	B
+	C
+	D
+	E
+	F
+	NumOfRegisters
+)
+
 var program = [...]uint8{
 	PSH, 5,
 	PSH, 6,
@@ -19,16 +30,18 @@ var program = [...]uint8{
 	HLT}
 
 type VM struct {
-	running bool
-	pc      uint32
-	stack   stack
+	running   bool
+	pc        uint32
+	stack     stack
+	registers [NumOfRegisters]uint8
 }
 
 func NewVM() *VM {
 	return &VM{
-		running: true,
-		pc:      0,
-		stack:   make(stack, 0),
+		running:   true,
+		pc:        0,
+		stack:     make(stack, 0),
+		registers: [NumOfRegisters]uint8{},
 	}
 }
 
